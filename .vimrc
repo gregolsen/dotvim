@@ -12,7 +12,6 @@ set softtabstop=2
 set incsearch
 set smartcase
 set showcmd
-set nocompatible
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -31,36 +30,48 @@ Plugin 'thoughtbot/vim-rspec'
 
 " Tools
 Plugin 'scrooloose/nerdtree'
+Plugin 'tomtom/tcomment_vim'
 Plugin 'ervandew/supertab'
 Plugin 'danro/rename.vim'
-Plugin 'kien/ctrlp.vim'
 Plugin 'kana/vim-fakeclip'
 Plugin 'vim-auto-save'
+Plugin 'tpope/vim-dispatch'
 
 " Search
-Plugin 'mileszs/ack.vim'
 Plugin 'rking/ag.vim'
 
 " Interface
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'geoffharcourt/one-dark.vim'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Lokaltog/vim-powerline'
-Plugin 'fholgado/minibufexpl.vim'
+Plugin 'bufexplorer.zip'
+Plugin 'milkypostman/vim-togglelist'
+Plugin 'chriskempson/base16-vim'
 
 " Code manipulation
 Plugin 'tpope/vim-surround'
-Plugin 'svermeulen/vim-easyclip'
+" Plugin 'svermeulen/vim-easyclip'
 Plugin 'tpope/vim-endwise'
 Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'Townk/vim-autoclose'
 Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'scrooloose/nerdcommenter'
+Plugin 'godlygeek/tabular'
+Plugin 'vim-scripts/taglist.vim'
 
 " Syntax Highlight
 Plugin 'kchmck/vim-coffee-script'
+Plugin 'pangloss/vim-javascript'
+Plugin 'matchit.zip'
+"Plugin 'Syntastic'
+
+" Commands
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'kien/ctrlp.vim'
 
 " Other
 Plugin 'malkomalko/projections.vim'
+Plugin 'vol2223/vim-colorblind-colorscheme'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -99,7 +110,7 @@ cmap w!! %!sudo tee > /dev/null %
 
 " greping for current word
 map <F2> :Ggrep <cword><CR>
-map <F3> :Ack <cword><CR>
+map <F3> :Ag <cword><CR>
 
 " mapping for ESC
 inoremap jk <ESC>
@@ -126,14 +137,67 @@ set isk+=-
 :nmap <silent> <C-l> :wincmd l<CR>
 
 " Toggle Nerdtree mapping
-map <C-o> :NERDTreeToggle<CR>
+map <BS> :NERDTreeToggle<CR>
 
 call togglebg#map("<F5>")
 
 let g:auto_save = 1
 let g:auto_save_in_insert_mode = 0
 
+let g:rspec_command = "Dispatch bundle exec rspec --drb --color {spec}"
 map <Leader>t :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
 map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
+
+let g:rails_projections = {
+\ "config/projections.json": {
+\   "command": "projections"
+\ },
+\ "app/services/*.rb": {
+\   "command": "service"
+\ },
+\ "app/presenters/*.rb": {
+\   "command": "presenter"
+\ },
+\ "app/serializers/*.rb": {
+\   "command": "serializer"
+\ },
+\ "spec/factories/*.rb": {
+\   "command": "factory"
+\ },
+\ "app/admin/*.rb": {
+\   "command": "admin",
+\   "affinity": "model",
+\   "related": "app/models/%s.rb",
+\   "template":
+\   "ActiveAdmin.register %S do\n\n  # form do\n  # end\n\n  #menu parent: '', label: ''\n\n  # index do\n  # end\n\nend\n"
+\ },
+\ "config/*.rb": { "command": "config"  },
+\ "spec/support/*.rb": {"command": "support"},
+\ "spec/features/*_spec.rb": {
+\   "command": "feature",
+\   "template": "require 'spec_helper'\n\nfeature '%h' do\n\nend",
+\ }}
+
+let g:bufExplorerShowRelativePath=1
+
+set foldmethod=indent
+set foldlevel=20
+
+set clipboard=unnamed
+
+" Syntastic
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['html'] }
+
+nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
+
+" ignore files (for ctrl-p)
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+
+nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
+vnoremap <Space> zf
+
+vnoremap m d
